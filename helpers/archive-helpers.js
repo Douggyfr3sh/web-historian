@@ -27,13 +27,23 @@ exports.initialize = function(pathsObj) {
 
 exports.readListOfUrls = function(callback) {
   //open the file
-  //read each line
-  //push each line to an array
-  //pass array to callback
-  //close file
+  var sitesList = '/Users/Doug/Documents/HR/Week04/hrr24-web-historian/archives/sites.txt';
+
+  fs.readFile(sitesList, 'utf8', (err, data) => {
+    if (err) { console.error(err); }
+    console.log('data in readListOfUrls is:', data);
+    callback(data);
+  });
 };
 
 exports.isUrlInList = function(url, callback) {
+  exports.readListOfUrls((data) => {
+    if (data.includes(url)) {
+      callback(true);
+    } else {
+      callback(false);
+    }
+  });
   //call readListofURLs passing a callback
   //check if url is in return value (array)
   //pass boolean result to callback

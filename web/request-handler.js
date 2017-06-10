@@ -12,36 +12,23 @@ var fetcher = require ('../workers/htmlfetcher');
 var handleGet = function (req,res) {
   res.statusCode = 200;
   var responseBody = {};
-  //console.log('this is req', req, 'this is res', res);
+
+  //create a cb func to pass to our fetcher
+  var cbLocal = function (err, data) {
+    if (err) { res.statusCode = 404; }
+    responseBody.body = data;
+    res.write(JSON.stringify(responseBody));
+    res.end();
+  };
+
   //Test #1- return index.html on request url === '/'
-  if (req.url === '/') {
+  if (req.url === '/') { /* We want local index.html*/
     var localURL = '/Users/Doug/Documents/HR/Week04/hrr24-web-historian/web/public/index.html';
-    console.log(localURL);
+    fetcher.getHTMLfile(localURL,cbLocal,true);
 
-    //create a cb func to pass to our fetcher
-    var cb = function (err, data) {
-      if (err) { res.statusCode = 404; }
-      console.log(data);
-      responseBody.body = data;
-      res.write(JSON.stringify(responseBody));
-      res.end();
-    };
-
-    fetcher.getHTMLfile(localURL,cb,true);
   } else { /* we are not requesting index.html */
-    //check if the file exists
-    if(archive.isUrlInList()) {
-      //Test #2- return content of a website from
-      //the archive if it exists there
-    } else {
-      //Test #3- return 404 error if file doesnt exist
-      res.statusCode = 404;
-      responseBody.body = {message: 'File not found'};
-      res.write(JSON.stringify(responseBody));
-      res.end();
-    }
-
-
+    //Get HTML file if it is in the archive
+    fetcher.getHTMLfile(archive.paths.archivedSites + req.url,cbLocal,true);
   }
 
 };
