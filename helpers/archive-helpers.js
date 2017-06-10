@@ -26,22 +26,28 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.readListOfUrls = function(callback) {
-  //open the file
-
-
-  fs.readFile(sitesList, 'utf8', (err, data) => {
-    if (err) { console.error(err); }
-    callback(data);
-  });
+exports.getHTMLfile = function (url, cb, isLocal) {
+  if (isLocal) {
+    fs.readFile(url, 'utf8', cb);
+  }
 };
 
-exports.isUrlInList = function(url, callback) {
+exports.readListOfUrls = function(callback) {
+  //open the file
+  exports.getHTMLfile(exports.paths.list, (err, data) => {
+    if (err) { console.log('error in readFile'); }
+    console.log('data in readListofUrls', data);
+    callback(data);
+  }, true);
+};
+
+exports.isUrlInList = function(url) {
   exports.readListOfUrls((data) => {
+    console.log('data inside isUrlInList', data);
     if (data.includes(url)) {
-      callback(true);
+      return true;
     } else {
-      callback(false);
+      return false;
     }
   });
   //call readListofURLs passing a callback
@@ -50,10 +56,30 @@ exports.isUrlInList = function(url, callback) {
 };
 
 exports.addUrlToList = function(url, callback) {
-  //open the file
-  //add the url to the file (write a line)
-  //call callback and pass in info about success or error
-  //close file
+  if (!exports.isUrlInList(url)) {
+    //open the file
+    fs.open(exports.paths.list, 'w', (err,fd) => {
+      if (err) { console.log('error opening file to add URL to list.'); }
+      fs.write(fd, url, (err) => {
+        if (err) { console.log ('error wrting new URL to list.')
+        } else {
+          console.log('wrote new url: ' + url + ' to list.');
+          fs.close(fd, (err) => {
+            if (err) {
+              callback(false);
+            } else {
+              callback(true);
+            }
+          });
+        }
+      });
+
+     });
+    //add the url to the file (write a line)
+    //call callback and pass in info about success or error
+    //close file
+
+  }
 };
 
 exports.isUrlArchived = function(url, callback) {

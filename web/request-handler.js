@@ -23,13 +23,12 @@ var handleGet = function (req,res) {
 
   //Test #1- return index.html on request url === '/'
   if (req.url === '/') { /* We want local index.html*/
-    var localURL = '/Users/Doug/Documents/HR/Week04/hrr24-web-historian/web/public/index.html';
     console.log(archive.paths.index);
-    fetcher.getHTMLfile(archive.paths.index,getHTMLcb,true);
+    archive.getHTMLfile(archive.paths.index,getHTMLcb,true);
 
   } else { /* we are not requesting index.html */
     //Get HTML file if it is in the archive
-    fetcher.getHTMLfile(archive.paths.archivedSites + req.url,getHTMLcb,true);
+    archive.getHTMLfile(archive.paths.archivedSites + req.url,getHTMLcb,true);
   }
 
 };
@@ -38,6 +37,16 @@ var handlePost = function (req,res) {
   res.statusCode = 302;
   var responseBody = {};
 
+  //create a cb func to pass to helpers
+  var postCb = function (success) {
+    if (success) {
+      console.log('wrote new URL to list');
+    } else {
+      console.log('problem writing URL to list');
+    }
+  };
+  console.log('REQUEST FOR CURR TEST:',req.url);
+  archive.addUrlToList(req.url, postCb);
 
 
 };

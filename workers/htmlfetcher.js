@@ -4,8 +4,3 @@ var helpers = require('../helpers/archive-helpers');
 var fs = require('fs');
 
 
-exports.getHTMLfile = function (url, cb, isLocal) {
-  if (isLocal) {
-    fs.readFile(url, 'utf8', cb);
-  }
-};

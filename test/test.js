@@ -33,11 +33,21 @@ describe('server', function() {
 
         // Create or clear the file.
         var fd = fs.openSync(fixturePath, 'w');
+        //fd takes in a path and flags
+        //file is created if it does not exist.
+        //returns an int representing the file descriptor
         fs.writeSync(fd, 'google');
         fs.closeSync(fd);
 
         // Write data to the file.
         fs.writeFileSync(fixturePath, 'google');
+        /*takes in 2 args, an fd and a string
+        write string to the file specified by fd.
+        if 2nd arg is not a string, it will be evaluated to one
+        **It is unsafe to use this miltiple times on the same
+        file without waiting for the callback (3rd arg)  For this
+        scenario, use fs.createWriteStream */
+
 
         request
           .get('/' + fixtureName)
@@ -58,6 +68,8 @@ describe('server', function() {
 
         // Reset the test file and process request
         fs.closeSync(fs.openSync(archive.paths.list, 'w'));
+
+        console.log('request.send IN TEST: ',request.send);
 
         request
           .post('/')
