@@ -41,17 +41,18 @@ exports.readListOfUrls = function(callback) {
   }, true);
 };
 
-exports.isUrlInList = function(url) {
+exports.isUrlInList = function(url, cb) {
   exports.readListOfUrls((data) => {
     console.log('data inside isUrlInList', data);
     console.log('url inside isUrlInList', url);
     for (var i = 0; i < data.length; i++) {
-      if (data[i].includes(url)) {
-        return true;
+      if (data[i] === url) {
+        cb(true);
+        return;
       }
     }
 
-    return false;
+    cb(false);
   });
   //call readListofURLs passing a callback
   //check if url is in return value (array)
@@ -59,32 +60,32 @@ exports.isUrlInList = function(url) {
 };
 
 exports.addUrlToList = function(url, callback) {
-  if (!exports.isUrlInList(url)) {
-    //open the file
-    fs.open(exports.paths.list, 'w', (err,fd) => {
-      if (err) {
-        console.log('error opening file to add URL to list.');
-      }
-      fs.write(fd, url, (err) => {
+  exports.isUrlInList(url, (isInList) => {
+    if (!isInList) {
+      //open the file
+      fs.open(exports.paths.list, 'w', (err,fd) => {
         if (err) {
-          console.log ('error wrting new URL to list.');
-        } else {
-          console.log('wrote new url: ' + url + ' to list.');
-          fs.close(fd, (err) => {
-            if (err) {
-              callback(false);
-            } else {
-              callback(true);
-            }
-          });
+          console.log('error opening file to add URL to list.');
         }
+        //write the new url to the list
+        fs.write(fd, url, (err) => {
+          if (err) {
+            console.log ('error wrting new URL to list.');
+          } else {
+            console.log('wrote new url: ' + url + ' to list.');
+            //close the file when done
+            fs.close(fd, (err) => {
+              if (err) {
+                callback(false);
+              } else {
+                callback(true);
+              }
+            });
+          }
+        });    // <---- is this what "callback hell" is?
       });
-    });
-    //add the url to the file (write a line)
-    //call callback and pass in info about success or error
-    //close file
-
-  }
+    }
+  });
 };
 
 exports.isUrlArchived = function(url, callback) {
