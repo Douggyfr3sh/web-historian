@@ -68,9 +68,6 @@ describe('server', function() {
 
         // Reset the test file and process request
         fs.closeSync(fs.openSync(archive.paths.list, 'w'));
-
-        console.log('request.send IN TEST: ',request.send);
-
         request
           .post('/') //indicates index.html just like in GET
           .type('form')

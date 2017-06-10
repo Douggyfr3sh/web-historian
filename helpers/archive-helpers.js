@@ -89,6 +89,15 @@ exports.addUrlToList = function(url, callback) {
 };
 
 exports.isUrlArchived = function(url, callback) {
+  //read the file
+  fs.readFile(exports.paths.archivedSites + '/' + url, 'utf8', (err, data) => {
+    //execute callback on boolean result
+    if (err) {
+      callback(false);
+    } else  {
+      callback(true);
+    }
+  });
 };
 
 exports.downloadUrls = function(urls) {
