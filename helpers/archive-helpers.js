@@ -12,7 +12,8 @@ var _ = require('underscore');
 exports.paths = {
   siteAssets: path.join(__dirname, '../web/public'),
   archivedSites: path.join(__dirname, '../archives/sites'),
-  list: path.join(__dirname, '../archives/sites.txt')
+  list: path.join(__dirname, '../archives/sites.txt'),
+  index: path.join(__dirname, '../web/public/index.html')
 };
 
 // Used for stubbing paths for tests, do not modify
@@ -27,11 +28,10 @@ exports.initialize = function(pathsObj) {
 
 exports.readListOfUrls = function(callback) {
   //open the file
-  var sitesList = '/Users/Doug/Documents/HR/Week04/hrr24-web-historian/archives/sites.txt';
+
 
   fs.readFile(sitesList, 'utf8', (err, data) => {
     if (err) { console.error(err); }
-    console.log('data in readListOfUrls is:', data);
     callback(data);
   });
 };

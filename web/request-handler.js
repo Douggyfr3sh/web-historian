@@ -14,7 +14,7 @@ var handleGet = function (req,res) {
   var responseBody = {};
 
   //create a cb func to pass to our fetcher
-  var cbLocal = function (err, data) {
+  var getHTMLcb = function (err, data) {
     if (err) { res.statusCode = 404; }
     responseBody.body = data;
     res.write(JSON.stringify(responseBody));
@@ -24,16 +24,21 @@ var handleGet = function (req,res) {
   //Test #1- return index.html on request url === '/'
   if (req.url === '/') { /* We want local index.html*/
     var localURL = '/Users/Doug/Documents/HR/Week04/hrr24-web-historian/web/public/index.html';
-    fetcher.getHTMLfile(localURL,cbLocal,true);
+    console.log(archive.paths.index);
+    fetcher.getHTMLfile(archive.paths.index,getHTMLcb,true);
 
   } else { /* we are not requesting index.html */
     //Get HTML file if it is in the archive
-    fetcher.getHTMLfile(archive.paths.archivedSites + req.url,cbLocal,true);
+    fetcher.getHTMLfile(archive.paths.archivedSites + req.url,getHTMLcb,true);
   }
 
 };
 
 var handlePost = function (req,res) {
+  res.statusCode = 302;
+  var responseBody = {};
+
+
 
 };
 
