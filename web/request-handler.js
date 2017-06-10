@@ -34,20 +34,36 @@ var handleGet = function (req,res) {
 };
 
 var handlePost = function (req,res) {
-  res.statusCode = 302;
-  var responseBody = {};
-
   //create a cb func to pass to helpers
   var postCb = function (success) {
     if (success) {
       console.log('wrote new URL to list');
+      res.statusCode = 302;
+      //may need to add logic here to send data in response
     } else {
       console.log('problem writing URL to list');
+      res.statusCode = 400;
     }
+    res.end();
   };
-  console.log('REQUEST FOR CURR TEST:',req.url);
-  archive.addUrlToList(req.url, postCb);
 
+  var requestBody = '';
+  req.on('data', function (data) {
+    //decode buffer
+    var htmlChunk = data.toString('utf8');
+    //get site from form input
+    htmlChunk = htmlChunk.slice(htmlChunk.indexOf('=') + 1);
+    console.log('POST data: ',htmlChunk);
+
+    //append chunk to requestBody
+    //may need to space or comma or /n delimit for processing
+    requestBody += htmlChunk + "\n";
+  });
+
+  req.on('end', function () {
+    //add site to the list of sites
+    archive.addUrlToList(requestBody, postCb);
+  });
 
 };
 

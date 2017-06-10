@@ -59,9 +59,12 @@ exports.addUrlToList = function(url, callback) {
   if (!exports.isUrlInList(url)) {
     //open the file
     fs.open(exports.paths.list, 'w', (err,fd) => {
-      if (err) { console.log('error opening file to add URL to list.'); }
+      if (err) {
+        console.log('error opening file to add URL to list.');
+      }
       fs.write(fd, url, (err) => {
-        if (err) { console.log ('error wrting new URL to list.')
+        if (err) {
+          console.log ('error wrting new URL to list.');
         } else {
           console.log('wrote new url: ' + url + ' to list.');
           fs.close(fd, (err) => {
@@ -73,8 +76,7 @@ exports.addUrlToList = function(url, callback) {
           });
         }
       });
-
-     });
+    });
     //add the url to the file (write a line)
     //call callback and pass in info about success or error
     //close file
