@@ -37,18 +37,21 @@ exports.readListOfUrls = function(callback) {
   exports.getHTMLfile(exports.paths.list, (err, data) => {
     if (err) { console.log('error in readFile'); }
     console.log('data in readListofUrls', data);
-    callback(data);
+    callback(data.split("\n"));
   }, true);
 };
 
 exports.isUrlInList = function(url) {
   exports.readListOfUrls((data) => {
     console.log('data inside isUrlInList', data);
-    if (data.includes(url)) {
-      return true;
-    } else {
-      return false;
+    console.log('url inside isUrlInList', url);
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].includes(url)) {
+        return true;
+      }
     }
+
+    return false;
   });
   //call readListofURLs passing a callback
   //check if url is in return value (array)

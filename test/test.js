@@ -72,9 +72,9 @@ describe('server', function() {
         console.log('request.send IN TEST: ',request.send);
 
         request
-          .post('/')
+          .post('/') //indicates index.html just like in GET
           .type('form')
-          .send({ url: url })
+          .send({ url: url })  //the form sends a POST request
           .expect(302, function (err) {
             if (!err) {
               var fileContents = fs.readFileSync(archive.paths.list, 'utf8');
