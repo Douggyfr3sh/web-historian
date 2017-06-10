@@ -38,15 +38,12 @@ exports.readListOfUrls = function(callback) {
   //open the file
   exports.getHTMLfile(exports.paths.list, (err, data) => {
     if (err) { console.log('error in readFile'); }
-    console.log('data in readListofUrls', data);
     callback(data.split("\n"));
   }, true);
 };
 
 exports.isUrlInList = function(url, cb) {
   exports.readListOfUrls((data) => {
-    console.log('data inside isUrlInList', data);
-    console.log('url inside isUrlInList', url);
     for (var i = 0; i < data.length; i++) {
       if (data[i] === url) {
         cb(true);
@@ -111,8 +108,6 @@ exports.downloadUrls = function(urls) {
     exports.isUrlArchived(val, (isArchived) => {
       if (!isArchived) {
         //if it is not, download the HTML of that page
-        console.log(val + ' is not archived in downloadUrls' );
-
         var options = {
           hostname: val,
           port: 80,
@@ -128,14 +123,12 @@ exports.downloadUrls = function(urls) {
           });
 
           res.on('end', () => {
-            console.log('download URL return str is:', resStr);
-
             //make a new file in the archives directory
             fs.writeFile(exports.paths.archivedSites + '/' + val, resStr, (err) => {
               if (err) {
                 throw err;
               }
-              console.log('the file has been written!');
+              console.log('the archive file ' + val + ' has been written!');
             });
           });
 
