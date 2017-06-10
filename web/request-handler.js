@@ -58,7 +58,6 @@ var handlePost = function (req,res) {
     //append chunk to requestBody
     //may need to space or comma or /n delimit for processing
     requestBody += htmlChunk + "\n";
-    console.log('requestBody in POST: ', requestBody);
   });
 
   req.on('end', function () {

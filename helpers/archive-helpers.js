@@ -1,6 +1,8 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
+var http = require('http');
+var httpHelpers = require('../web/http-helpers');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -100,5 +102,53 @@ exports.isUrlArchived = function(url, callback) {
   });
 };
 
+//trying to require jQuery breaks stuff!!
 exports.downloadUrls = function(urls) {
+  //Iterate over urls array
+  urls.forEach( (val,ind,arr) => {
+    var resStr = '';
+    //for each URL, check if it is archived
+    exports.isUrlArchived(val, (isArchived) => {
+      if (!isArchived) {
+        //if it is not, download the HTML of that page
+        console.log(val + ' is not archived in downloadUrls' );
+
+        var options = {
+          hostname: val,
+          port: 80,
+          method: 'GET',
+          headers: httpHelpers.headers
+        };
+
+        var req = http.request(options, (res) => {
+          res.setEncoding('utf8');
+
+          res.on('data', (chunk) => {
+            resStr += chunk;
+          });
+
+          res.on('end', () => {
+            console.log('download URL return str is:', resStr);
+
+            //make a new file in the archives directory
+            fs.writeFile(exports.paths.archivedSites + '/' + val, resStr, (err) => {
+              if (err) {
+                throw err;
+              }
+              console.log('the file has been written!');
+            });
+          });
+
+        });
+
+        req.on('error', (e) => {
+          console.log('problem with downloading a URL: ', e.message);
+        });
+
+        req.end();
+
+      }
+    });
+  });
+
 };

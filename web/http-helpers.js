@@ -19,3 +19,26 @@ exports.serveAssets = function(res, asset, callback) {
 
 
 // As you progress, keep thinking about what helper functions you can put here!
+
+//helper functions for getting data
+exports.sendResponse = function(res,obj,status) {
+  if (!status) {
+    status = 200;
+  }
+  response.writeHead(status, headers);
+  response.end(obj);
+};
+
+//Not currently used- consider refactoring this way
+exports.getData = function(req,cb) {
+  var retStr = '';
+
+  req.on('data', (chunk) => {
+    retStr += chunk;
+  });
+
+  req.on('end', () => {
+    cb(retStr);
+  });
+
+};
