@@ -28,9 +28,18 @@ var handleGet = function (req,res) {
     };
 
     fetcher.getHTMLfile(localURL,cb,true);
-  } else {
-    //Test #2- return content of a website from
-    //the archive if it exists there
+  } else { /* we are not requesting index.html */
+    //check if the file exists
+    if(archive.isUrlInList()) {
+      //Test #2- return content of a website from
+      //the archive if it exists there
+    } else {
+      //Test #3- return 404 error if file doesnt exist
+      res.statusCode = 404;
+      responseBody.body = {message: 'File not found'};
+      res.write(JSON.stringify(responseBody));
+      res.end();
+    }
 
 
   }
