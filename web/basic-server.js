@@ -1,7 +1,7 @@
 var http = require('http');
 var handler = require('./request-handler');
 var initialize = require('./initialize.js');
-
+var fetcher = require('../workers/htmlfetcher');
 // Why do you think we have this here?
 // HINT: It has to do with what's in .gitignore
 initialize('./archives');
@@ -15,5 +15,8 @@ if (module.parent) {
 } else {
   server.listen(port, ip);
   console.log('Listening on http://' + ip + ':' + port);
+
+  //Initialize fetcher
+  fetcher.startHelper();
 }
 

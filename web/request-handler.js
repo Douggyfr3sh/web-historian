@@ -34,6 +34,7 @@ var handleGet = function (req,res) {
 };
 
 var handlePost = function (req,res) {
+  console.log('Post handler reached');
   //create a cb func to pass to helpers
   var postCb = function (success) {
     if (success) {
@@ -53,11 +54,10 @@ var handlePost = function (req,res) {
     var htmlChunk = data.toString('utf8');
     //get site from form input
     htmlChunk = htmlChunk.slice(htmlChunk.indexOf('=') + 1);
-    console.log('POST data: ',htmlChunk);
-
     //append chunk to requestBody
     //may need to space or comma or /n delimit for processing
     requestBody += htmlChunk + "\n";
+    console.log('htmlChunk in handlePost is: ', htmlChunk);
   });
 
   req.on('end', function () {
