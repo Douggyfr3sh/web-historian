@@ -25,8 +25,8 @@ exports.sendResponse = function(res,obj,status) {
   if (!status) {
     status = 200;
   }
-  response.writeHead(status, headers);
-  response.end(obj);
+  res.writeHead(status, exports.headers);
+  res.end(obj);
 };
 
 //Send a redirect when we have archived the site
@@ -35,6 +35,11 @@ exports.sendRedirect = function (res, loc, status) {
   status = status ? status : 302;
   res.writeHead(status, {Location: loc});
   res.end();
+};
+
+//send 404 error when things aren't found
+exports.notFound = function (res) {
+  exports.sendResponse(res, '404: page not found', 404);
 };
 
 //Not currently used- consider refactoring this way

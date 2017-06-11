@@ -37,20 +37,9 @@ var handleGet = function (req,res) {
 var handlePost = function (req,res) {
   console.log('Post handler reached');
   //create a cb func to pass to helpers
-  var postCb = function (success) {
-    if (success) {
-      console.log('wrote new URL to list');
-      res.statusCode = 302;
-      //may need to add logic here to send data in response
-    } else {
-      console.log('problem writing URL to list');
-      res.statusCode = 400;
-    }
-    res.end();
-  };
-
   var requestBody = '';
   req.on('data', function (data) {
+    console.log('data in onData in hanldePost: ', data.toString('utf8'));
     //decode buffer
     var htmlChunk = data.toString('utf8');
     //get site from form input
@@ -84,7 +73,7 @@ var handlePost = function (req,res) {
             //let the user know we will load the site shortly (send redirect.)
             helpers.sendRedirect(res, archive.paths.loading, 302);
           } else {
-            console.log('error adding url to list: ' + requestBody);
+            helpers.notFound(res);
           }
         });
       }
@@ -107,6 +96,8 @@ exports.handleRequest = function (req, res) {
   } else if (req.method === 'POST') {
     //handle POST requests
     handlePost(req,res);
+  } else {
+    helpers.notFound(res);
   }
 
   //res.end(archive.paths.list);
