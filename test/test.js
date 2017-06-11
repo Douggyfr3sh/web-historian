@@ -70,7 +70,7 @@ describe('server', function() {
         request
           .post('/') //indicates index.html just like in GET
           .type('form')
-          .send({ url: url })  //the form sends a POST request
+          .send(url)  //the form sends a POST request
           .expect(302, function (err) {
             if (!err) {
               var fileContents = fs.readFileSync(archive.paths.list, 'utf8');

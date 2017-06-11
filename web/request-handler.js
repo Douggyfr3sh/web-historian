@@ -68,6 +68,7 @@ var handlePost = function (req,res) {
 
   helpers.getData(req, (data) => {
     var url = data.slice(data.indexOf('=') + 1);
+    console.log('url in post', url);
 
     //is site in list?
     archive.isUrlInList(url, (isFound) => {
@@ -86,13 +87,8 @@ var handlePost = function (req,res) {
         //site is not in list
         //add to list
         archive.addUrlToList(url, (err) => {
-          if (err) {
-            //send 404
-            helpers.notFound(res);
-          } else {
-            //redirect to loading page
-            helpers.sendRedirect(res, '/loading.html');
-          }
+          //redirect to loading page
+          helpers.sendRedirect(res, '/loading.html');
         });
 
       }
