@@ -1,7 +1,8 @@
 var path = require('path');
 var archive = require('../helpers/archive-helpers');
-var fs = require ('fs');
-var fetcher = require ('../workers/htmlfetcher');
+var fs = require('fs');
+var fetcher = require('../workers/htmlfetcher');
+var helpers = require('./http-helpers');
 // require more modules/folders here!
 
 //research path module docs
@@ -61,13 +62,40 @@ var handlePost = function (req,res) {
   });
 
   req.on('end', function () {
-    //add site to the list of sites
-    archive.addUrlToList(requestBody, postCb);
+    //first- check if the site is in the list of sites
+    archive.isUrlInList(requestBody, (isInList) => {
+      if (isInList) {
+        //is it archived?
+        archive.isUrlArchived(requestBody, (isArchived) => {
+          if (isArchived) {
+            //redirect to the archived site
+            helpers.sendRedirect(res, archive.paths.archivedSites + '/' + requestBody, 302);
+          } else {
+            //send redirect to loading page
+            helpers.sendRedirect(res, archive.paths.loading, 302);
+          }
+
+        });
+
+      } else {
+        //append site name to sites list
+        archive.addUrlToList(requestBody, (wasAdded) => {
+          if (wasAdded) {
+            //let the user know we will load the site shortly (send redirect.)
+            helpers.sendRedirect(res, archive.paths.loading, 302);
+          } else {
+            console.log('error adding url to list: ' + requestBody);
+          }
+        });
+      }
+    });
+
   });
 
 };
 
 exports.handleRequest = function (req, res) {
+  console.log('request received');
   //handle request errors
   req.on('error', function(err) {
     console.error(err.stack);

@@ -29,6 +29,14 @@ exports.sendResponse = function(res,obj,status) {
   response.end(obj);
 };
 
+//Send a redirect when we have archived the site
+//OR the archiving is pending
+exports.sendRedirect = function (res, loc, status) {
+  status = status ? status : 302;
+  res.writeHead(status, {Location: loc});
+  res.end();
+};
+
 //Not currently used- consider refactoring this way
 exports.getData = function(req,cb) {
   var retStr = '';
