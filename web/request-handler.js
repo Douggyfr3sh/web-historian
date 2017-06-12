@@ -45,8 +45,10 @@ var handlePost = function (req,res) {
   console.log('Post handler reached');
 
   helpers.getData(req, (data) => {
-    var url = data.slice(data.indexOf('=') + 1);
-    console.log('url in post', url);
+    var url = data.slice(data.indexOf('=') + 1).replace('http://', '');
+    if (url.includes('.gov')) {
+      helpers.notFound(res);
+    }
 
     //is site in list?
     archive._isUrlInList(url, (isFound) => {

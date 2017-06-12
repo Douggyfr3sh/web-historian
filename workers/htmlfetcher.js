@@ -7,5 +7,5 @@ var fs = require('fs');
 //console.log statements work since node-scheduler is used
 exports.archiveSites = function () {
   console.log('worker started: ', Date.now());
-  archive.readListOfUrls(archive.downloadUrls);
+  archive._readListOfUrls(archive.downloadUrls);
 };

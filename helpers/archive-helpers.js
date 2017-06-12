@@ -56,6 +56,8 @@ exports._isUrlInList = function(url, cb) {
   });
 };
 
+exports.isUrlInList = Promise.promisify(exports._isUrlInList);
+
 
 exports._addUrlToList = function(url, callback) {
   exports._isUrlInList(url, (isInList) => {
@@ -85,6 +87,8 @@ exports._addUrlToList = function(url, callback) {
     }
   });
 };
+
+exports.addUrlToList = Promise.promisify(exports._addUrlToList);
 
 exports._isUrlArchived = function(url, callback) {
   //read the file

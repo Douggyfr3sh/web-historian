@@ -148,6 +148,8 @@ describe('archive helpers', function() {
         if (++counter === total) { done(); }
       });
     });
+
+
   });
 
   describe('#downloadUrls', function () {
@@ -161,5 +163,36 @@ describe('archive helpers', function() {
         done();
       }, 1200);
     });
+  });
+});
+
+describe('added extra tests', function () {
+  it('should condition user input', function(done) {
+    var url = 'http://www.example.com';
+    // Reset the test file and process request
+    fs.closeSync(fs.openSync(archive.paths.list, 'w'));
+    request
+      .post('/') //indicates index.html just like in GET
+      .type('form')
+      .send(url)  //the form sends a POST request
+      .expect(302, function (err) {
+        if (!err) {
+          var fileContents = fs.readFileSync(archive.paths.list, 'utf8');
+          expect(fileContents).to.equal('www.example.com' + '\n');
+        }
+
+        done(err);
+      });
+  });
+
+  it('should 404 if user tries to archive a government website', function(done) {
+    var url = 'www.example.gov';
+    // Reset the test file and process request
+    fs.closeSync(fs.openSync(archive.paths.list, 'w'));
+    request
+      .post('/') //indicates index.html just like in GET
+      .type('form')
+      .send(url)  //the form sends a POST request
+      .expect(404, done);
   });
 });
