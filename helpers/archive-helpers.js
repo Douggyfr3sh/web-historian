@@ -4,6 +4,7 @@ var path = require('path');
 var _ = require('underscore');
 var http = require('http');
 var httpHelpers = require('../web/http-helpers');
+var Promise = require('bluebird');
 
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
@@ -47,7 +48,7 @@ exports._readListOfUrls = function(callback) {
 
 exports._isUrlInList = function(url, cb) {
   //var urlsArr = exports.readListOfUrls();
-  exports.readListOfUrls(function(sites) {
+  exports._readListOfUrls(function(sites) {
     var found = _.any(sites, function(site, i) {
       return site.match(url);
     });
@@ -55,7 +56,6 @@ exports._isUrlInList = function(url, cb) {
   });
 };
 
-exports.isUrlInList = Promise.promisify(exports._isUrlInList);
 
 exports._addUrlToList = function(url, callback) {
   exports._isUrlInList(url, (isInList) => {
@@ -97,6 +97,9 @@ exports._isUrlArchived = function(url, callback) {
     }
   });
 };
+
+exports.isUrlArchived = Promise.promisify(exports._isUrlArchived);
+
 
 //trying to require jQuery breaks stuff!!
 exports._downloadUrls = function(urls) {
