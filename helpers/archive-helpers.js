@@ -4,7 +4,7 @@ var path = require('path');
 var _ = require('underscore');
 var http = require('http');
 var httpHelpers = require('../web/http-helpers');
-var Promise = require('bluebird');
+
 /*
  * You will need to reuse the same paths many times over in the course of this sprint.
  * Consider using the `paths` object below to store frequently used file paths. This way,
@@ -44,8 +44,6 @@ exports._readListOfUrls = function(callback) {
     }
   });
 };
-
-exports.readListOfUrls = Promise.promisify(exports._readListOfUrls);
 
 exports._isUrlInList = function(url, cb) {
   //var urlsArr = exports.readListOfUrls();
@@ -99,8 +97,6 @@ exports._isUrlArchived = function(url, callback) {
     }
   });
 };
-
-exports.isUrlArchived = Promise.promisify(exports._isUrlArchived);
 
 //trying to require jQuery breaks stuff!!
 exports._downloadUrls = function(urls) {
