@@ -35,28 +35,6 @@ var handleGet = function (req,res) {
       }
     });
   });
-
-  //------------------------
-
-  /* Was stuck trying to get my server to serve the index page so I took a peek at the solution to try to solve.  My old code is below, and I wrote the code above after the solution video
-  res.statusCode = 200;
-  var responseBody = {};
-  //create a cb func to pass to our fetcher
-  var getHTMLcb = function (err, data) {
-    if (err) { res.statusCode = 404; }
-    responseBody.body = data;
-    res.write(JSON.stringify(responseBody));
-    res.end();
-  };
-  //Test #1- return index.html on request url === '/'
-  if (req.url === '/') {
-    console.log(archive.paths.index);
-    archive.getHTMLfile(archive.paths.index,getHTMLcb,true);
-  } else {
-    //Get HTML file if it is in the archive
-    archive.getHTMLfile(archive.paths.archivedSites + req.url,getHTMLcb,true);
-  } */
-
 };
 
 var handlePost = function (req,res) {
@@ -70,15 +48,16 @@ var handlePost = function (req,res) {
     archive._isUrlInList(url, (isFound) => {
       if (isFound) {
         //is site archived?
-        archive._isUrlArchived(url, (isArchived) => {
-          if (isArchived) {
-            //redirect
-            helpers.sendRedirect(res, '/' + url);
-          } else {
-            //redirect to loading page
-            helpers.sendRedirect(res, '/loading.html');
-          }
-        });
+
+
+        if (archive.isUrlArchived(url)) {
+          //redirect
+          helpers.sendRedirect(res, '/' + url);
+        } else {
+          //redirect to loading page
+          helpers.sendRedirect(res, '/loading.html');
+        }
+
       } else {
         //site is not in list
         //add to list
