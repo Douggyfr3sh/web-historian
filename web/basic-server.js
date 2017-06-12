@@ -2,6 +2,7 @@ var http = require('http');
 var handler = require('./request-handler');
 var initialize = require('./initialize.js');
 var fetcher = require('../workers/htmlfetcher');
+var scheduler = require('node-schedule');
 // Why do you think we have this here?
 // HINT: It has to do with what's in .gitignore
 initialize('./archives');
@@ -17,6 +18,6 @@ if (module.parent) {
   console.log('Listening on http://' + ip + ':' + port);
 
   //Initialize fetcher
-  fetcher.startHelper();
+  scheduler.scheduleJob('0 * * * * *',fetcher.archiveSites);
 }
 
