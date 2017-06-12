@@ -30,37 +30,34 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports._getHTMLfile = function (url, cb, isLocal) {
-  if (isLocal) {
-    fs.readFile(url, 'utf8', cb);
-  }
-};
+// exports._getHTMLfile = function (url, cb, isLocal) {
+//   if (isLocal) {
+//     fs.readFile(url, 'utf8', cb);
+//   }
+// };
 
 exports._readListOfUrls = function(callback) {
-  //open the file
-  exports._getHTMLfile(exports.paths.list, (err, data) => {
-    if (err) { console.log('error in readFile'); }
-    callback(data.split("\n"));
-  }, true);
+  fs.readFile(exports.paths.list, function(err, sites) {
+    sites = sites.toString().split('\n');
+    if (callback) {
+      callback(sites);
+    }
+  });
 };
 
 exports.readListOfUrls = Promise.promisify(exports._readListOfUrls);
 
 exports._isUrlInList = function(url, cb) {
-  exports._readListOfUrls((data) => {
-    for (var i = 0; i < data.length; i++) {
-      if (data[i] === url) {
-        cb(true);
-        return;
-      }
-    }
-
-    cb(false);
+  //var urlsArr = exports.readListOfUrls();
+  exports.readListOfUrls(function(sites) {
+    var found = _.any(sites, function(site, i) {
+      return site.match(url);
+    });
+    cb(found);
   });
-  //call readListofURLs passing a callback
-  //check if url is in return value (array)
-  //pass boolean result to callback
 };
+
+exports.isUrlInList = Promise.promisify(exports._isUrlInList);
 
 exports._addUrlToList = function(url, callback) {
   exports._isUrlInList(url, (isInList) => {

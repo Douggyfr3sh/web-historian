@@ -46,7 +46,7 @@ var handlePost = function (req,res) {
 
     //is site in list?
     archive._isUrlInList(url, (isFound) => {
-      if (isFound) {
+      if (archive.isUrlInList(url)) {
         //is site archived?
 
 
