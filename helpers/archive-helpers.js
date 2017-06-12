@@ -1,3 +1,4 @@
+
 var fs = require('fs');
 var path = require('path');
 var _ = require('underscore');
@@ -29,22 +30,22 @@ exports.initialize = function(pathsObj) {
 // The following function names are provided to you to suggest how you might
 // modularize your code. Keep it clean!
 
-exports.getHTMLfile = function (url, cb, isLocal) {
+exports._getHTMLfile = function (url, cb, isLocal) {
   if (isLocal) {
     fs.readFile(url, 'utf8', cb);
   }
 };
 
-exports.readListOfUrls = function(callback) {
+exports._readListOfUrls = function(callback) {
   //open the file
-  exports.getHTMLfile(exports.paths.list, (err, data) => {
+  exports._getHTMLfile(exports.paths.list, (err, data) => {
     if (err) { console.log('error in readFile'); }
     callback(data.split("\n"));
   }, true);
 };
 
-exports.isUrlInList = function(url, cb) {
-  exports.readListOfUrls((data) => {
+exports._isUrlInList = function(url, cb) {
+  exports._readListOfUrls((data) => {
     for (var i = 0; i < data.length; i++) {
       if (data[i] === url) {
         cb(true);
@@ -59,8 +60,8 @@ exports.isUrlInList = function(url, cb) {
   //pass boolean result to callback
 };
 
-exports.addUrlToList = function(url, callback) {
-  exports.isUrlInList(url, (isInList) => {
+exports._addUrlToList = function(url, callback) {
+  exports._isUrlInList(url, (isInList) => {
     if (!isInList) {
       //open the file
       fs.open(exports.paths.list, 'w', (err,fd) => {
@@ -88,7 +89,7 @@ exports.addUrlToList = function(url, callback) {
   });
 };
 
-exports.isUrlArchived = function(url, callback) {
+exports._isUrlArchived = function(url, callback) {
   //read the file
   fs.readFile(exports.paths.archivedSites + '/' + url, 'utf8', (err, data) => {
     //execute callback on boolean result
@@ -101,12 +102,12 @@ exports.isUrlArchived = function(url, callback) {
 };
 
 //trying to require jQuery breaks stuff!!
-exports.downloadUrls = function(urls) {
+exports._downloadUrls = function(urls) {
   //Iterate over urls array
   urls.forEach( (val,ind,arr) => {
     var resStr = '';
     //for each URL, check if it is archived
-    exports.isUrlArchived(val, (isArchived) => {
+    exports._isUrlArchived(val, (isArchived) => {
       if (!isArchived) {
         //if it is not, download the HTML of that page
         var options = {

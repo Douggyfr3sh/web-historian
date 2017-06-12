@@ -25,7 +25,7 @@ var handleGet = function (req,res) {
     }
 
     //respond to request
-    archive.isUrlInList(getPath, (isFound)=> {
+    archive._isUrlInList(getPath, (isFound)=> {
       if (isFound) {
         //send redirect
         helpers.sendRedirect(res, '/loading.html');
@@ -39,10 +39,8 @@ var handleGet = function (req,res) {
   //------------------------
 
   /* Was stuck trying to get my server to serve the index page so I took a peek at the solution to try to solve.  My old code is below, and I wrote the code above after the solution video
-
   res.statusCode = 200;
   var responseBody = {};
-
   //create a cb func to pass to our fetcher
   var getHTMLcb = function (err, data) {
     if (err) { res.statusCode = 404; }
@@ -50,12 +48,10 @@ var handleGet = function (req,res) {
     res.write(JSON.stringify(responseBody));
     res.end();
   };
-
   //Test #1- return index.html on request url === '/'
   if (req.url === '/') {
     console.log(archive.paths.index);
     archive.getHTMLfile(archive.paths.index,getHTMLcb,true);
-
   } else {
     //Get HTML file if it is in the archive
     archive.getHTMLfile(archive.paths.archivedSites + req.url,getHTMLcb,true);
@@ -71,10 +67,10 @@ var handlePost = function (req,res) {
     console.log('url in post', url);
 
     //is site in list?
-    archive.isUrlInList(url, (isFound) => {
+    archive._isUrlInList(url, (isFound) => {
       if (isFound) {
         //is site archived?
-        archive.isUrlArchived(url, (isArchived) => {
+        archive._isUrlArchived(url, (isArchived) => {
           if (isArchived) {
             //redirect
             helpers.sendRedirect(res, '/' + url);
@@ -86,7 +82,7 @@ var handlePost = function (req,res) {
       } else {
         //site is not in list
         //add to list
-        archive.addUrlToList(url, (err) => {
+        archive._addUrlToList(url, (err) => {
           //redirect to loading page
           helpers.sendRedirect(res, '/loading.html');
         });
@@ -94,57 +90,6 @@ var handlePost = function (req,res) {
       }
     });
   });
-
-
-  //--------------------------------------------
-
-
-
-  //create a cb func to pass to helpers
-  // var requestBody = '';
-  // req.on('data', function (data) {
-  //   console.log('data in onData in hanldePost: ', data.toString('utf8'));
-  //   //decode buffer
-  //   var htmlChunk = data.toString('utf8');
-  //   //get site from form input
-  //   htmlChunk = htmlChunk.slice(htmlChunk.indexOf('=') + 1);
-  //   //append chunk to requestBody
-  //   //may need to space or comma or /n delimit for processing
-  //   requestBody += htmlChunk + "\n";
-  //   console.log('htmlChunk in handlePost is: ', htmlChunk);
-  // });
-
-  // req.on('end', function () {
-  //   //first- check if the site is in the list of sites
-  //   archive.isUrlInList(requestBody, (isInList) => {
-  //     if (isInList) {
-  //       //is it archived?
-  //       archive.isUrlArchived(requestBody, (isArchived) => {
-  //         if (isArchived) {
-  //           //redirect to the archived site
-  //           helpers.sendRedirect(res, archive.paths.archivedSites + '/' + requestBody, 302);
-  //         } else {
-  //           //send redirect to loading page
-  //           helpers.sendRedirect(res, archive.paths.loading, 302);
-  //         }
-
-  //       });
-
-  //     } else {
-  //       //append site name to sites list
-  //       archive.addUrlToList(requestBody, (wasAdded) => {
-  //         if (wasAdded) {
-  //           //let the user know we will load the site shortly (send redirect.)
-  //           helpers.sendRedirect(res, archive.paths.loading, 302);
-  //         } else {
-  //           helpers.notFound(res);
-  //         }
-  //       });
-  //     }
-  //   });
-
-  // });
-
 };
 
 exports.handleRequest = function (req, res) {
@@ -163,6 +108,4 @@ exports.handleRequest = function (req, res) {
   } else {
     helpers.notFound(res);
   }
-
-  //res.end(archive.paths.list);
 };

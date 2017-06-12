@@ -90,7 +90,7 @@ describe('archive helpers', function() {
       var urlArray = ['example1.com', 'example2.com'];
       fs.writeFileSync(archive.paths.list, urlArray.join('\n'));
 
-      archive.readListOfUrls(function(urls) {
+      archive._readListOfUrls(function(urls) {
         expect(urls).to.deep.equal(urlArray);
         done();
       });
@@ -105,12 +105,12 @@ describe('archive helpers', function() {
       var counter = 0;
       var total = 2;
 
-      archive.isUrlInList('example1.com', function (exists) {
+      archive._isUrlInList('example1.com', function (exists) {
         expect(exists).to.be.true;
         if (++counter === total) { done(); }
       });
 
-      archive.isUrlInList('gibberish', function (exists) {
+      archive._isUrlInList('gibberish', function (exists) {
         expect(exists).to.be.false;
         if (++counter === total) { done(); }
       });
@@ -122,8 +122,8 @@ describe('archive helpers', function() {
       var urlArray = ['example1.com', 'example2.com\n'];
       fs.writeFileSync(archive.paths.list, urlArray.join('\n'));
 
-      archive.addUrlToList('someurl.com', function () {
-        archive.isUrlInList('someurl.com', function (exists) {
+      archive._addUrlToList('someurl.com', function () {
+        archive._isUrlInList('someurl.com', function (exists) {
           expect(exists).to.be.true;
           done();
         });
@@ -138,12 +138,12 @@ describe('archive helpers', function() {
       var counter = 0;
       var total = 2;
 
-      archive.isUrlArchived('www.example.com', function (exists) {
+      archive._isUrlArchived('www.example.com', function (exists) {
         expect(exists).to.be.true;
         if (++counter === total) { done(); }
       });
 
-      archive.isUrlArchived('www.notarchived.com', function (exists) {
+      archive._isUrlArchived('www.notarchived.com', function (exists) {
         expect(exists).to.be.false;
         if (++counter === total) { done(); }
       });
@@ -153,7 +153,7 @@ describe('archive helpers', function() {
   describe('#downloadUrls', function () {
     it('should download all pending urls in the list', function (done) {
       var urlArray = ['www.example.com', 'www.google.com'];
-      archive.downloadUrls(urlArray);
+      archive._downloadUrls(urlArray);
 
       // Ugly hack to wait for all downloads to finish.
       setTimeout(function () {
@@ -163,4 +163,3 @@ describe('archive helpers', function() {
     });
   });
 });
-
